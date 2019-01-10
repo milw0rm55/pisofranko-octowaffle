@@ -77,10 +77,29 @@ extension ParticipantesViewController: UITableViewDelegate,UITableViewDataSource
         return cell
         }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let task1 = participantes[indexPath.row]
+        task1.isDone = !task1.isDone
+        if repository.update(a: task1)
+        {
+           PeopleTable?.reloadRows(at: [indexPath], with: .automatic)
+        }
 
     }
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
+    }
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let task1 = participantes[indexPath.row]
+            if repository.delete (a: task1)
+            {
+                participantes.remove(at: indexPath.row)
+                PeopleTable?.beginUpdates()
+                PeopleTable?.deleteRows(at: [indexPath], with: .automatic)
+                PeopleTable?.endUpdates()
+            }
+            
+        }
     }
 }
 extension ParticipantesViewController: AddViewControllerDelegate
